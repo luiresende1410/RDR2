@@ -1,7 +1,7 @@
 /**
  * RDR2 Interactive Map - Main Application
- * Leaflet.js com CRS.Simple para mapa n„o-geogr·fico
- * 100% est·tico - funciona no GitHub Pages
+ * Leaflet.js com CRS.Simple para mapa n√£o-geogr√°fico
+ * 100% est√°tico - funciona no GitHub Pages
  */
 
 (function() {
@@ -16,9 +16,9 @@
   const STORAGE_KEY = 'rdr2map_progress';
   const STORAGE_FILTERS_KEY = 'rdr2map_filters';
 
-  // Imagem do mapa RDR2 (usar uma imagem de alta resoluÁ„o)
+  // Imagem do mapa RDR2 (usar uma imagem de alta resolu√ß√£o)
   // Para GitHub Pages, colocar na pasta assets/
-  const MAP_IMAGE_URL = 'assets/rdr2-map.jpg';
+  const MAP_IMAGE_URL = 'assets/rdr2-map.png';
 
   // === STATE ===
   let map;
@@ -68,7 +68,7 @@
 
       const isFound = progress[m.id] || false;
 
-      // Criar Ìcone customizado
+      // Criar √≠cone customizado
       var icon = L.divIcon({
         className: 'custom-marker' + (isFound ? ' found' : ''),
         html: '<div style="background:' + cat.color + ';">' + cat.icon + '</div>',
@@ -217,13 +217,13 @@
     renderCategories();
     bindEvents();
 
-    // Mobile: sidebar comeÁa fechada
+    // Mobile: sidebar come√ßa fechada
     if (window.innerWidth <= 768) {
       document.getElementById('sidebar').classList.add('hidden');
     }
   }
 
-  // Expor funÁıes para onclick inline
+  // Expor fun√ß√µes para onclick inline
   window.RDR2Map = {
     toggleFound: toggleFound,
     toggleCategory: toggleCategory,
