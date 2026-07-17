@@ -18,7 +18,7 @@
 
   // Imagem do mapa RDR2 (usar uma imagem de alta resolução)
   // Para GitHub Pages, colocar na pasta assets/
-  const MAP_IMAGE_URL = 'assets/rdr2-map.svg';
+  const MAP_IMAGE_URL = 'assets/rdr2-map.jpg';
 
   // === STATE ===
   let map;
