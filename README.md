@@ -37,7 +37,7 @@ Os dados ficam em `js/markers-data.js`. Cada ponto segue o formato:
 { id: 'id_unico', cat: 'horses', name: 'Nome', desc: 'Descrição', coords: [y, x] }
 ```
 
-As coordenadas usam o sistema legado `[y, x]`: `y` varia de 0 a 100 e `x` de 0 a 150. A aplicação projeta o eixo `x` para os bounds 4:3 do Leaflet (`0–133,3333`). Os pontos são relativos à imagem e podem precisar de calibração visual.
+As coordenadas usam o sistema legado `[y, x]`: `y` varia de 0 a 100 e `x` de 0 a 150. A aplicação projeta esses valores sobre a área cartográfica útil de 6630 × 4974 px dentro da imagem HD, compensando a moldura de papel (`x: 360–6990`, `y: 216–5190`). Os pontos continuam relativos à imagem e podem receber calibração individual.
 
 ## Créditos e fontes
 

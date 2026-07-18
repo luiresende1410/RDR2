@@ -2,7 +2,7 @@
  * RDR2 Interactive Map - Markers Data
  * Categorias e localizações de itens no mapa.
  * As coordenadas usam o sistema legado [y, x]: y entre 0–100 e x entre 0–150.
- * A aplicação projeta x para os bounds 4:3 do Leaflet (0–133,3333).
+ * A aplicação as projeta sobre a área cartográfica útil, compensando a moldura da imagem.
  */
 
 const CATEGORIES = [

@@ -7,10 +7,16 @@
   const MAP_HEIGHT = 100;
   const MAP_WIDTH = MAP_HEIGHT * (MAP_IMAGE_WIDTH / MAP_IMAGE_HEIGHT);
   const MAP_BOUNDS = [[0, 0], [MAP_HEIGHT, MAP_WIDTH]];
-  const MAP_IMAGE_URL = new URL('./assets/rdr2-map.jpg?v=20260718-map', document.baseURI).href;
-  const LEGACY_X_MAX = 150;
-  const LEGACY_X_SCALE = MAP_WIDTH / LEGACY_X_MAX;
+  const MAP_IMAGE_URL = new URL('./assets/rdr2-map.jpg?v=20260718-calibrated', document.baseURI).href;
   const MAP_MARGIN = 8;
+  const LEGACY_COORDS_WIDTH = 150;
+  const LEGACY_COORDS_HEIGHT = 100;
+  const MAP_CONTENT_PIXELS = Object.freeze({
+    left: 360,
+    top: 216,
+    right: 6990,
+    bottom: 5190
+  });
   const MOBILE_VIEWPORT = window.matchMedia('(max-width: 768px)');
   const STORAGE_KEY = 'rdr2map_progress';
   const FILTERS_KEY = 'rdr2map_filters';
@@ -78,7 +84,14 @@
         popupAnchor: [0, -14]
       });
 
-      const mapCoords = [item.coords[0], item.coords[1] * LEGACY_X_SCALE];
+      const contentWidth = MAP_CONTENT_PIXELS.right - MAP_CONTENT_PIXELS.left;
+      const contentHeight = MAP_CONTENT_PIXELS.bottom - MAP_CONTENT_PIXELS.top;
+      const pixelX = MAP_CONTENT_PIXELS.left + (item.coords[1] / LEGACY_COORDS_WIDTH) * contentWidth;
+      const pixelY = MAP_CONTENT_PIXELS.bottom - (item.coords[0] / LEGACY_COORDS_HEIGHT) * contentHeight;
+      const mapCoords = [
+        MAP_HEIGHT * (1 - pixelY / MAP_IMAGE_HEIGHT),
+        MAP_WIDTH * (pixelX / MAP_IMAGE_WIDTH)
+      ];
       const marker = L.marker(mapCoords, { icon, title: item.name, riseOnHover: true });
       marker.bindPopup(buildPopup(item, category, found), { maxWidth: 290, minWidth: 220 });
       marker.addTo(markersLayer);
