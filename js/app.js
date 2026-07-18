@@ -3,7 +3,7 @@
   'use strict';
 
   const MAP_BOUNDS = [[0, 0], [100, 133.3333]];
-  const MAP_IMAGE_URL = 'assets/rdr2-map.png';
+  const MAP_IMAGE_URL = 'assets/rdr2-map.jpg';
   const STORAGE_KEY = 'rdr2map_progress';
   const FILTERS_KEY = 'rdr2map_filters';
 
@@ -196,4 +196,5 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
+
 
