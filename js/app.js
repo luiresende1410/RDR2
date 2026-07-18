@@ -1,238 +1,199 @@
-/**
- * RDR2 Interactive Map - Main Application
- * Leaflet.js com CRS.Simple para mapa não-geográfico
- * 100% estático - funciona no GitHub Pages
- */
-
-(function() {
+﻿/** RDR2 Interactive Map — aplicação estática para GitHub Pages. */
+(function () {
   'use strict';
 
-  // === CONFIG ===
-  const MAP_BOUNDS = [[0, 0], [100, 150]];
-  const MAP_CENTER = [50, 75];
-  const MAP_ZOOM = 2;
-  const MAP_MIN_ZOOM = 1;
-  const MAP_MAX_ZOOM = 5;
-  const STORAGE_KEY = 'rdr2map_progress';
-  const STORAGE_FILTERS_KEY = 'rdr2map_filters';
-
-  // Imagem do mapa RDR2 (usar uma imagem de alta resolução)
-  // Para GitHub Pages, colocar na pasta assets/
+  const MAP_BOUNDS = [[0, 0], [100, 133.3333]];
   const MAP_IMAGE_URL = 'assets/rdr2-map.png';
+  const STORAGE_KEY = 'rdr2map_progress';
+  const FILTERS_KEY = 'rdr2map_filters';
 
-  // === STATE ===
   let map;
   let markersLayer;
   let markerObjects = {};
-  let progress = loadProgress();
-  let activeFilters = loadFilters();
+  let progress = readStorage(STORAGE_KEY, {});
+  let activeFilters = normalizeFilters(readStorage(FILTERS_KEY, {}));
 
-  // === INIT MAP ===
+  function readStorage(key, fallback) {
+    try { return JSON.parse(localStorage.getItem(key)) || fallback; }
+    catch (_) { return fallback; }
+  }
+
+  function normalizeFilters(saved) {
+    const normalized = {};
+    CATEGORIES.forEach(cat => { normalized[cat.id] = saved[cat.id] !== false; });
+    return normalized;
+  }
+
   function initMap() {
     map = L.map('map', {
       crs: L.CRS.Simple,
-      minZoom: MAP_MIN_ZOOM,
-      maxZoom: MAP_MAX_ZOOM,
-      zoomControl: true,
+      minZoom: 1,
+      maxZoom: 5,
+      zoomSnap: 0.25,
+      zoomDelta: 0.5,
       attributionControl: false,
+      maxBoundsViscosity: 0.85
     });
 
-    // Adicionar imagem do mapa como overlay
-    L.imageOverlay(MAP_IMAGE_URL, MAP_BOUNDS).addTo(map);
+    const overlay = L.imageOverlay(MAP_IMAGE_URL, MAP_BOUNDS, { alt: 'Mapa de Red Dead Redemption 2' });
+    overlay.on('error', () => alert('Não foi possível carregar a imagem do mapa.'));
+    overlay.addTo(map);
     map.fitBounds(MAP_BOUNDS);
-    map.setMaxBounds(MAP_BOUNDS);
-
-    // Layer para marcadores
+    map.setMaxBounds([[-8, -8], [108, 141.3333]]);
     markersLayer = L.layerGroup().addTo(map);
-
-    // Renderizar marcadores
     renderMarkers();
+
+    setTimeout(() => document.getElementById('mapHint').classList.add('hidden'), 5000);
   }
 
-  // === MARKERS ===
   function renderMarkers() {
     markersLayer.clearLayers();
     markerObjects = {};
+    const term = document.getElementById('searchInput').value.toLocaleLowerCase('pt-BR').trim();
+    let visible = 0;
 
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    MARKERS.forEach(item => {
+      if (!activeFilters[item.cat]) return;
+      if (term && !(`${item.name} ${item.desc}`).toLocaleLowerCase('pt-BR').includes(term)) return;
 
-    MARKERS.forEach(function(m) {
-      // Verificar filtro de categoria
-      if (!activeFilters[m.cat]) return;
-
-      // Verificar busca
-      if (searchTerm && !m.name.toLowerCase().includes(searchTerm) && !m.desc.toLowerCase().includes(searchTerm)) return;
-
-      const cat = CATEGORIES.find(function(c) { return c.id === m.cat; });
-      if (!cat) return;
-
-      const isFound = progress[m.id] || false;
-
-      // Criar ícone customizado
-      var icon = L.divIcon({
-        className: 'custom-marker' + (isFound ? ' found' : ''),
-        html: '<div style="background:' + cat.color + ';">' + cat.icon + '</div>',
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
+      const category = CATEGORIES.find(cat => cat.id === item.cat);
+      if (!category) return;
+      const found = Boolean(progress[item.id]);
+      const icon = L.divIcon({
+        className: '',
+        html: `<div class="custom-marker${found ? ' found' : ''}" style="--marker-color:${category.color}" title="${escapeHtml(item.name)}"><span>${category.icon}</span></div>`,
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
+        popupAnchor: [0, -14]
       });
 
-      var marker = L.marker(m.coords, { icon: icon });
-
-      // Popup
-      var popupContent = '<div class="marker-popup">' +
-        '<h4>' + escHtml(m.name) + '</h4>' +
-        '<p>' + escHtml(m.desc) + '</p>' +
-        '<button class="popup-btn ' + (isFound ? 'found' : '') + '" onclick="window.RDR2Map.toggleFound(\'' + m.id + '\')">' +
-        (isFound ? '? Encontrado' : 'Marcar encontrado') +
-        '</button></div>';
-
-      marker.bindPopup(popupContent, { maxWidth: 250 });
+      const marker = L.marker(item.coords, { icon, title: item.name, riseOnHover: true });
+      marker.bindPopup(buildPopup(item, category, found), { maxWidth: 290, minWidth: 220 });
       marker.addTo(markersLayer);
-      markerObjects[m.id] = marker;
+      markerObjects[item.id] = marker;
+      visible += 1;
     });
 
+    document.getElementById('visibleMarkersCount').textContent = `${visible} ${visible === 1 ? 'local' : 'locais'}`;
     updateProgress();
   }
 
-  // === PROGRESS ===
+  function buildPopup(item, category, found) {
+    return `<article class="marker-popup">
+      <span class="popup-cat" style="--cat-color:${category.color}">${category.icon} ${escapeHtml(category.name)}</span>
+      <h2>${escapeHtml(item.name)}</h2>
+      <p>${escapeHtml(item.desc)}</p>
+      <button class="popup-btn${found ? ' found' : ''}" type="button" onclick="window.RDR2Map.toggleFound('${item.id}')">
+        ${found ? '✓ Encontrado — desfazer' : '○ Marcar como encontrado'}
+      </button>
+    </article>`;
+  }
+
   function toggleFound(id) {
-    if (progress[id]) {
-      delete progress[id];
-    } else {
-      progress[id] = true;
-    }
-    saveProgress();
-    renderMarkers();
-  }
-
-  function loadProgress() {
-    try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-    } catch(e) { return {}; }
-  }
-
-  function saveProgress() {
+    if (progress[id]) delete progress[id]; else progress[id] = true;
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    renderCategories();
+    renderMarkers();
+    const marker = markerObjects[id];
+    if (marker) marker.openPopup();
   }
 
   function resetProgress() {
-    if (confirm('Tem certeza que deseja resetar todo o progresso?')) {
-      progress = {};
-      saveProgress();
-      renderMarkers();
-    }
+    if (!confirm('Remover todo o progresso salvo neste dispositivo?')) return;
+    progress = {};
+    localStorage.setItem(STORAGE_KEY, '{}');
+    renderCategories();
+    renderMarkers();
   }
 
   function updateProgress() {
-    var total = MARKERS.filter(function(m) { return activeFilters[m.cat]; }).length;
-    var found = MARKERS.filter(function(m) { return activeFilters[m.cat] && progress[m.id]; }).length;
-    var pct = total > 0 ? Math.round((found / total) * 100) : 0;
-
-    document.getElementById('progressFill').style.width = pct + '%';
-    document.getElementById('progressText').textContent = found + ' / ' + total + ' encontrados (' + pct + '%)';
+    const total = MARKERS.length;
+    const found = MARKERS.filter(item => progress[item.id]).length;
+    const percent = total ? Math.round((found / total) * 100) : 0;
+    document.getElementById('progressFill').style.width = `${percent}%`;
+    document.getElementById('progressText').textContent = `${found} / ${total} (${percent}%)`;
   }
 
-  // === FILTERS ===
-  function loadFilters() {
-    try {
-      var saved = JSON.parse(localStorage.getItem(STORAGE_FILTERS_KEY));
-      if (saved) return saved;
-    } catch(e) {}
-    // Default: todos ativos
-    var filters = {};
-    CATEGORIES.forEach(function(c) { filters[c.id] = true; });
-    return filters;
-  }
-
-  function saveFilters() {
-    localStorage.setItem(STORAGE_FILTERS_KEY, JSON.stringify(activeFilters));
-  }
-
-  function toggleCategory(catId) {
-    activeFilters[catId] = !activeFilters[catId];
+  function toggleCategory(categoryId) {
+    activeFilters[categoryId] = !activeFilters[categoryId];
     saveFilters();
     renderCategories();
     renderMarkers();
   }
 
-  // === SIDEBAR ===
-  function renderCategories() {
-    var container = document.getElementById('categories');
-    var html = '';
-
-    CATEGORIES.forEach(function(cat) {
-      var total = MARKERS.filter(function(m) { return m.cat === cat.id; }).length;
-      var found = MARKERS.filter(function(m) { return m.cat === cat.id && progress[m.id]; }).length;
-      var isActive = activeFilters[cat.id];
-
-      html += '<div class="category-group">' +
-        '<div class="category-header" onclick="window.RDR2Map.toggleCategory(\'' + cat.id + '\')">' +
-        '<span class="cat-icon">' + cat.icon + '</span>' +
-        '<span class="cat-name">' + cat.name + '</span>' +
-        '<span class="cat-count">' + found + '/' + total + '</span>' +
-        '<span class="cat-toggle ' + (isActive ? 'active' : '') + '">?</span>' +
-        '</div></div>';
-    });
-
-    container.innerHTML = html;
-  }
-
-  function toggleSidebar() {
-    var sidebar = document.getElementById('sidebar');
-    sidebar.classList.toggle('visible');
-    sidebar.classList.toggle('hidden');
-  }
-
-  // === SEARCH ===
-  function onSearch() {
+  function setAllCategories(enabled) {
+    CATEGORIES.forEach(cat => { activeFilters[cat.id] = enabled; });
+    saveFilters();
+    renderCategories();
     renderMarkers();
   }
 
-  // === UTILS ===
-  function escHtml(str) {
-    var div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
+  function saveFilters() {
+    localStorage.setItem(FILTERS_KEY, JSON.stringify(activeFilters));
   }
 
-  // === EVENTS ===
-  function bindEvents() {
-    document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
-    document.getElementById('sidebarClose').addEventListener('click', toggleSidebar);
-    document.getElementById('btnReset').addEventListener('click', resetProgress);
-    document.getElementById('searchInput').addEventListener('input', debounce(onSearch, 300));
+  function updateSelectAll() {
+    const checkbox = document.getElementById('selectAllCategories');
+    const enabled = CATEGORIES.filter(cat => activeFilters[cat.id]).length;
+    checkbox.checked = enabled === CATEGORIES.length;
+    checkbox.indeterminate = enabled > 0 && enabled < CATEGORIES.length;
+  }
+
+  function renderCategories() {
+    const container = document.getElementById('categories');
+    container.innerHTML = CATEGORIES.map(category => {
+      const total = MARKERS.filter(item => item.cat === category.id).length;
+      const found = MARKERS.filter(item => item.cat === category.id && progress[item.id]).length;
+      return `<button class="category-item${activeFilters[category.id] ? ' active' : ''}" type="button"
+        style="--cat-color:${category.color}" onclick="window.RDR2Map.toggleCategory('${category.id}')"
+        aria-pressed="${activeFilters[category.id]}">
+        <span class="cat-checkbox" aria-hidden="true"></span>
+        <span class="cat-icon" aria-hidden="true">${category.icon}</span>
+        <span class="cat-name">${escapeHtml(category.name)}</span>
+        <span class="cat-count">${found}/${total}</span>
+      </button>`;
+    }).join('');
+    updateSelectAll();
+  }
+
+  function toggleSidebar(forceOpen) {
+    const sidebar = document.getElementById('sidebar');
+    const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !sidebar.classList.contains('visible');
+    sidebar.classList.toggle('visible', shouldOpen);
+    sidebar.classList.toggle('hidden', !shouldOpen);
+    document.body.classList.toggle('sidebar-closed', !shouldOpen);
+    setTimeout(() => map.invalidateSize(), 320);
+  }
+
+  function escapeHtml(value) {
+    const node = document.createElement('div');
+    node.textContent = value;
+    return node.innerHTML;
   }
 
   function debounce(fn, delay) {
-    var timer;
-    return function() {
-      clearTimeout(timer);
-      timer = setTimeout(fn, delay);
-    };
+    let timer;
+    return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); };
   }
 
-  // === BOOT ===
+  function bindEvents() {
+    document.getElementById('sidebarToggle').addEventListener('click', () => toggleSidebar(true));
+    document.getElementById('sidebarClose').addEventListener('click', () => toggleSidebar(false));
+    document.getElementById('btnReset').addEventListener('click', resetProgress);
+    document.getElementById('selectAllCategories').addEventListener('change', event => setAllCategories(event.target.checked));
+    document.getElementById('searchInput').addEventListener('input', debounce(renderMarkers, 180));
+    window.addEventListener('resize', debounce(() => map.invalidateSize(), 150));
+  }
+
   function init() {
-    initMap();
     renderCategories();
     bindEvents();
-
-    // Mobile: sidebar começa fechada
-    if (window.innerWidth <= 768) {
-      document.getElementById('sidebar').classList.add('hidden');
-    }
+    initMap();
+    toggleSidebar(window.innerWidth > 768);
   }
 
-  // Expor funções para onclick inline
-  window.RDR2Map = {
-    toggleFound: toggleFound,
-    toggleCategory: toggleCategory,
-  };
-
-  // Iniciar quando DOM pronto
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  window.RDR2Map = { toggleFound, toggleCategory };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
+

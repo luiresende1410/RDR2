@@ -1,63 +1,48 @@
-﻿# RDR2 Interactive Map
+﻿# RDR2 — Mapa Interativo
 
-Mapa interativo de Red Dead Redemption 2 com marcadores de localizações, progresso salvo e filtros por categoria.
+Mapa interativo não oficial de Red Dead Redemption 2, responsivo e 100% estático para GitHub Pages.
 
-## Features
+## Recursos
 
-- Mapa interativo com zoom (Leaflet.js + CRS.Simple)
-- Marcadores por categoria (animais lendários, tesouros, cidades, etc.)
-- Filtros por categoria na sidebar
-- Busca por nome/descrição
-- Progresso salvo no localStorage (marcar itens como encontrados)
-- Barra de progresso geral
-- Responsivo (desktop e mobile)
-- 100% estático - roda no GitHub Pages
+- mapa HD com zoom e navegação por toque;
+- filtros por categoria e controle para selecionar/desselecionar tudo;
+- busca por local, cavalo ou tesouro;
+- cavalos raros e áreas de aparição;
+- etapas das principais caças ao tesouro;
+- progresso salvo no `localStorage` do dispositivo;
+- interface original em estilo western para desktop e celular.
 
-## Deploy no GitHub Pages
+## Executar localmente
 
-1. Crie um repositório no GitHub
-2. Faça push deste projeto
-3. Vá em Settings > Pages
-4. Source: Deploy from a branch
-5. Branch: main, Folder: / (root)
-6. Aguarde ~1 minuto
+Abra com um servidor HTTP estático. Exemplo:
 
-## Mapa
+```bash
+npx serve .
+```
 
-Coloque a imagem HD do mapa RDR2 em `assets/rdr2-map.jpg`.
+Abrir o `index.html` diretamente também pode funcionar, mas um servidor local reproduz melhor o GitHub Pages.
 
-Recomendado: imagem de pelo menos 4000x3000px para boa qualidade no zoom.
+## Publicar no GitHub Pages
 
-Fontes de imagem do mapa:
-- https://www.gtabase.com/red-dead-redemption-2/map-locations/
-- Screenshots do jogo montadas em alta resolução
+1. No repositório, abra **Settings > Pages**.
+2. Escolha **Deploy from a branch**.
+3. Selecione `main` e `/ (root)`.
+4. Acesse `https://luiresende1410.github.io/RDR2/` após o deploy.
 
-## Estrutura
+## Editar localizações
 
-`
-RDR2/
-├── index.html          ← Página principal
-├── css/style.css       ← Estilos
-├── js/
-│   ├── app.js          ← Lógica do mapa (Leaflet)
-│   └── markers-data.js ← Dados dos marcadores
-├── assets/
-│   └── rdr2-map.jpg    ← Imagem do mapa (você precisa adicionar)
-└── README.md
-`
+Os dados ficam em `js/markers-data.js`. Cada ponto segue o formato:
 
-## Adicionar marcadores
+```javascript
+{ id: 'id_unico', cat: 'horses', name: 'Nome', desc: 'Descrição', coords: [y, x] }
+```
 
-Edite `js/markers-data.js` e adicione itens ao array MARKERS:
+As coordenadas são relativas à imagem e podem precisar de calibração visual.
 
-`javascript
-{ id: 'unique_id', cat: 'category_id', name: 'Nome', desc: 'Descrição', coords: [lat, lng] }
-`
+## Créditos e fontes
 
-As coordenadas são no sistema [0-100, 0-150] onde [0,0] é o canto inferior-esquerdo e [100,150] é o canto superior-direito.
+- Interface cartográfica: [Leaflet](https://leafletjs.com/), licença BSD-2-Clause.
+- Imagem-base do mapa: [GTA Base — Full RDR2 Map](https://www.gtabase.com/red-dead-redemption-2/map-locations/). Crédito ao autor conforme solicitado na página de origem.
+- Referência para cavalos e mecânicas de aparição: [RDR2.org — Wild Horse Locations](http://www.rdr2.org/guides/story-mode/wild-horse-locations-guide/) e [IGN — Horses](https://www.ign.com/wikis/red-dead-redemption-2/Horses).
 
-## Stack
-
-- HTML/CSS/JS vanilla (zero build)
-- Leaflet.js 1.9.4 via CDN
-- localStorage para persistência
+Conteúdo de referência foi resumido e reescrito. Red Dead Redemption 2 e seus elementos pertencem à Rockstar Games/Take-Two Interactive. Este projeto não é afiliado nem endossado pelos titulares.
