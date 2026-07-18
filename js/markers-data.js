@@ -1,7 +1,7 @@
 ﻿/**
  * RDR2 Interactive Map - Markers Data
  * Categorias e localizações de itens no mapa.
- * As coordenadas usam o sistema legado [y, x]: y entre 0–100 e x entre 0–150.
+ * As coordenadas usam o sistema legado [y, x]: y entre 0–100 e x entre 0–120.
  * A aplicação as projeta sobre a área cartográfica útil, compensando a moldura da imagem.
  */
 

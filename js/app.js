@@ -9,7 +9,7 @@
   const MAP_BOUNDS = [[0, 0], [MAP_HEIGHT, MAP_WIDTH]];
   const MAP_IMAGE_URL = new URL('./assets/rdr2-map.jpg?v=20260718-calibrated', document.baseURI).href;
   const MAP_MARGIN = 8;
-  const LEGACY_COORDS_WIDTH = 150;
+  const LEGACY_COORDS_WIDTH = 120;
   const LEGACY_COORDS_HEIGHT = 100;
   const MAP_CONTENT_PIXELS = Object.freeze({
     left: 360,
