@@ -33,14 +33,15 @@
       zoomSnap: 0.25,
       zoomDelta: 0.5,
       attributionControl: false,
-      maxBoundsViscosity: 0.85
+      maxBoundsViscosity: 0.85,
+      preferCanvas: true
     });
 
     L.tileLayer(TILES_URL, {
       minZoom: 2,
       maxZoom: 7,
       noWrap: true,
-      bounds: MAP_BOUNDARY
+      tms: false
     }).addTo(map);
 
     map.fitBounds(MAP_BOUNDARY);
