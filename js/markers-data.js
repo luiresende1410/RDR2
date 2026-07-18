@@ -1,7 +1,8 @@
 ﻿/**
  * RDR2 Interactive Map - Markers Data
- * Categorias e localizações de itens no mapa
- * Coordenadas baseadas no sistema Leaflet CRS.Simple [y, x] normalizado para a imagem do mapa
+ * Categorias e localizações de itens no mapa.
+ * As coordenadas usam o sistema legado [y, x]: y entre 0–100 e x entre 0–150.
+ * A aplicação projeta x para os bounds 4:3 do Leaflet (0–133,3333).
  */
 
 const CATEGORIES = [
@@ -20,8 +21,7 @@ const CATEGORIES = [
   { id: 'towns', name: 'Cidades', icon: '🏘️', color: '#e2e8f0' },
 ];
 
-// Marcadores de exemplo - coordenadas normalizadas [lat, lng] no range ~[-140, 0] a [0, 180]
-// O mapa RDR2 tem proporção ~4:3, vamos usar bounds [[0,0], [100, 150]]
+// Marcadores em coordenadas legadas [y, x], preservadas para manter os dados existentes.
 const MARKERS = [
   // Cidades
   { id: 't1', cat: 'towns', name: 'Valentine', desc: 'Cidade de pecuaristas nas Heartlands.', coords: [62, 68] },

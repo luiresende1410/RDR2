@@ -2,9 +2,16 @@
 (function () {
   'use strict';
 
-  const MAP_BOUNDS = [[0, 0], [100, 133.3333]];
-  const MAP_IMAGE_URL = new URL('./assets/rdr2-map-web.jpg?v=c4a09b1-live2', document.baseURI).href;
-  const LEGACY_X_SCALE = 133.3333 / 150;
+  const MAP_IMAGE_WIDTH = 7200;
+  const MAP_IMAGE_HEIGHT = 5400;
+  const MAP_HEIGHT = 100;
+  const MAP_WIDTH = MAP_HEIGHT * (MAP_IMAGE_WIDTH / MAP_IMAGE_HEIGHT);
+  const MAP_BOUNDS = [[0, 0], [MAP_HEIGHT, MAP_WIDTH]];
+  const MAP_IMAGE_URL = new URL('./assets/rdr2-map.jpg?v=20260718-map', document.baseURI).href;
+  const LEGACY_X_MAX = 150;
+  const LEGACY_X_SCALE = MAP_WIDTH / LEGACY_X_MAX;
+  const MAP_MARGIN = 8;
+  const MOBILE_VIEWPORT = window.matchMedia('(max-width: 768px)');
   const STORAGE_KEY = 'rdr2map_progress';
   const FILTERS_KEY = 'rdr2map_filters';
 
@@ -40,7 +47,10 @@
     overlay.on('error', () => alert('Não foi possível carregar a imagem do mapa.'));
     overlay.addTo(map);
     map.fitBounds(MAP_BOUNDS);
-    map.setMaxBounds([[-8, -8], [108, 141.3333]]);
+    map.setMaxBounds([
+      [-MAP_MARGIN, -MAP_MARGIN],
+      [MAP_HEIGHT + MAP_MARGIN, MAP_WIDTH + MAP_MARGIN]
+    ]);
     markersLayer = L.layerGroup().addTo(map);
     renderMarkers();
 
@@ -178,6 +188,10 @@
     return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); };
   }
 
+  function syncSidebarForViewport(event) {
+    toggleSidebar(!event.matches);
+  }
+
   function bindEvents() {
     document.getElementById('sidebarToggle').addEventListener('click', () => toggleSidebar(true));
     document.getElementById('sidebarClose').addEventListener('click', () => toggleSidebar(false));
@@ -185,13 +199,14 @@
     document.getElementById('selectAllCategories').addEventListener('change', event => setAllCategories(event.target.checked));
     document.getElementById('searchInput').addEventListener('input', debounce(renderMarkers, 180));
     window.addEventListener('resize', debounce(() => map.invalidateSize(), 150));
+    MOBILE_VIEWPORT.addEventListener('change', syncSidebarForViewport);
   }
 
   function init() {
     renderCategories();
     bindEvents();
     initMap();
-    toggleSidebar(window.innerWidth > 768);
+    syncSidebarForViewport(MOBILE_VIEWPORT);
   }
 
   window.RDR2Map = { toggleFound, toggleCategory };

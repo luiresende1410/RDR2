@@ -4,7 +4,7 @@ Mapa interativo não oficial de Red Dead Redemption 2, responsivo e 100% estáti
 
 ## Recursos
 
-- mapa HD com zoom e navegação por toque;
+- mapa HD de 7200 × 5400 px (proporção 4:3), com zoom e navegação por toque;
 - filtros por categoria e controle para selecionar/desselecionar tudo;
 - busca por local, cavalo ou tesouro;
 - cavalos raros e áreas de aparição;
@@ -37,7 +37,7 @@ Os dados ficam em `js/markers-data.js`. Cada ponto segue o formato:
 { id: 'id_unico', cat: 'horses', name: 'Nome', desc: 'Descrição', coords: [y, x] }
 ```
 
-As coordenadas são relativas à imagem e podem precisar de calibração visual.
+As coordenadas usam o sistema legado `[y, x]`: `y` varia de 0 a 100 e `x` de 0 a 150. A aplicação projeta o eixo `x` para os bounds 4:3 do Leaflet (`0–133,3333`). Os pontos são relativos à imagem e podem precisar de calibração visual.
 
 ## Créditos e fontes
 
