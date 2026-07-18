@@ -2,13 +2,8 @@
 (function () {
   'use strict';
 
-  const MAP_IMAGE_WIDTH = 7200;
-  const MAP_IMAGE_HEIGHT = 5400;
-  const MAP_HEIGHT = 100;
-  const MAP_WIDTH = MAP_HEIGHT * (MAP_IMAGE_WIDTH / MAP_IMAGE_HEIGHT);
-  const MAP_BOUNDS = [[0, 0], [MAP_HEIGHT, MAP_WIDTH]];
-  const MAP_IMAGE_URL = new URL('./assets/rdr2-map.jpg?v=20260718-v3', document.baseURI).href;
-  const MAP_MARGIN = 8;
+  const TILES_URL = 'https://oyster.ignimgs.com/ignmedia/wikimaps/red-dead-redemption-2/hi-res/{z}/{x}-{y}.jpg';
+  const MAP_BOUNDARY = L.latLngBounds(L.latLng(-190, 0), L.latLng(0, 256));
   const MOBILE_VIEWPORT = window.matchMedia('(max-width: 768px)');
   const STORAGE_KEY = 'rdr2map_progress';
   const FILTERS_KEY = 'rdr2map_filters';
@@ -33,22 +28,23 @@
   function initMap() {
     map = L.map('map', {
       crs: L.CRS.Simple,
-      minZoom: 1,
-      maxZoom: 5,
+      minZoom: 2,
+      maxZoom: 7,
       zoomSnap: 0.25,
       zoomDelta: 0.5,
       attributionControl: false,
       maxBoundsViscosity: 0.85
     });
 
-    const overlay = L.imageOverlay(MAP_IMAGE_URL, MAP_BOUNDS, { alt: 'Mapa de Red Dead Redemption 2' });
-    overlay.on('error', () => alert('Não foi possível carregar a imagem do mapa.'));
-    overlay.addTo(map);
-    map.fitBounds(MAP_BOUNDS);
-    map.setMaxBounds([
-      [-MAP_MARGIN, -MAP_MARGIN],
-      [MAP_HEIGHT + MAP_MARGIN, MAP_WIDTH + MAP_MARGIN]
-    ]);
+    L.tileLayer(TILES_URL, {
+      minZoom: 2,
+      maxZoom: 7,
+      noWrap: true,
+      bounds: MAP_BOUNDARY
+    }).addTo(map);
+
+    map.fitBounds(MAP_BOUNDARY);
+    map.setMaxBounds(MAP_BOUNDARY.pad(0.05));
     markersLayer = L.layerGroup().addTo(map);
     renderMarkers();
 
