@@ -3,7 +3,8 @@
   'use strict';
 
   const MAP_BOUNDS = [[0, 0], [100, 133.3333]];
-  const MAP_IMAGE_URL = 'assets/rdr2-map-web.jpg?v=bf05344-4';
+  const MAP_IMAGE_URL = new URL('./assets/rdr2-map-web.jpg?v=c4a09b1-live2', document.baseURI).href;
+  const LEGACY_X_SCALE = 133.3333 / 150;
   const STORAGE_KEY = 'rdr2map_progress';
   const FILTERS_KEY = 'rdr2map_filters';
 
@@ -67,7 +68,8 @@
         popupAnchor: [0, -14]
       });
 
-      const marker = L.marker(item.coords, { icon, title: item.name, riseOnHover: true });
+      const mapCoords = [item.coords[0], item.coords[1] * LEGACY_X_SCALE];
+      const marker = L.marker(mapCoords, { icon, title: item.name, riseOnHover: true });
       marker.bindPopup(buildPopup(item, category, found), { maxWidth: 290, minWidth: 220 });
       marker.addTo(markersLayer);
       markerObjects[item.id] = marker;
@@ -196,6 +198,7 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 })();
+
 
 
 
