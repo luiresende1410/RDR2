@@ -66,11 +66,13 @@ const MARKERS = [
   { id: 'tr_elemental_4', cat: 'treasure', name: 'Elemental Trail — Tesouro', desc: 'Cemitério de Coot\'s Chapel, a sudeste de Armadillo.', coords: [-144.45, 80.44] },
 
   // Peixes Lendários
-  { id: 'lf1', cat: 'legendary_fish', name: 'Peixe-gato Lendário (Channel Catfish)', desc: 'Não pode ser pego normalmente. Missão especial no Flat Iron Lake.', coords: [-98.62, 192.97] },
+  { id: 'lf1', cat: 'legendary_fish', name: 'Bullhead Catfish Lendário', desc: 'Encontrado em Sisika Penitentiary.', coords: [-100.0, 215.5] },
   { id: 'lf2', cat: 'legendary_fish', name: 'Truta Lendária (Steelhead)', desc: 'Encontrada em Willard\'s Rest.', coords: [-36.98, 208.65] },
   { id: 'lf3', cat: 'legendary_fish', name: 'Salmão Lendário (Sockeye)', desc: 'No lago Isabella.', coords: [-50.87, 114.32] },
   { id: 'lf4', cat: 'legendary_fish', name: 'Perca Lendária (Largemouth Bass)', desc: 'Em San Luis River, New Austin.', coords: [-156.07, 86.12] },
-  { id: 'lf5', cat: 'legendary_fish', name: 'Pike Lendário (Northern)', desc: 'Em O\'Creagh\'s Run.', coords: [-62.46, 141.17] },
+  { id: 'lf5', cat: 'legendary_fish', name: 'Pike Lendário (Northern)', desc: 'Em O\'Creagh\'s Run.', coords: [-88.0, 140.0] },
+  { id: 'lf6', cat: 'legendary_fish', name: 'Redfin Pickerel Lendário', desc: 'Encontrado em Elysian Pool area.', coords: [-136.3, 111.1] },
+  { id: 'lf7', cat: 'legendary_fish', name: 'Smallmouth Bass Lendário', desc: 'Em Owanjila Lake.', coords: [-93.9, 99.9] },
 
   // Esconderijos de Gangues
   { id: 'gh1', cat: 'gang_hideouts', name: 'Hanging Dog Ranch', desc: 'Esconderijo da gangue O\'Driscoll ao norte de Strawberry.', coords: [-75.54, 99.92] },
@@ -88,11 +90,13 @@ const MARKERS = [
   { id: 'poi6', cat: 'points_of_interest', name: 'Hobbit House', desc: 'Casa enterrada similar a toca de hobbit.', coords: [-47.25, 164.58] },
 
   // Acampamentos
-  { id: 'c1', cat: 'camps', name: 'Horseshoe Overlook', desc: 'Primeiro acampamento da gangue (Chapter 2).', coords: [-87.3, 142.9] },
+  { id: 'c1', cat: 'camps', name: 'Horseshoe Overlook', desc: 'Primeiro acampamento da gangue (Chapter 2).', coords: [-83.6, 146.5] },
   { id: 'c2', cat: 'camps', name: 'Clemens Point', desc: 'Acampamento em Lemoyne (Chapter 3).', coords: [-111.0, 163.0] },
   { id: 'c3', cat: 'camps', name: 'Shady Belle', desc: 'Acampamento em Lemoyne (Chapter 4).', coords: [-125.0, 188.0] },
-  { id: 'c4', cat: 'camps', name: 'Beaver Hollow', desc: 'Último acampamento (Chapter 6).', coords: [-64.37, 198.19] },
+  { id: 'c4', cat: 'camps', name: 'Beaver Hollow', desc: 'Último acampamento (Chapter 6).', coords: [-56.6, 198.19] },
   { id: 'c5', cat: 'camps', name: 'Colter', desc: 'Acampamento na neve (Chapter 1).', coords: [-33.94, 121.89] },
+  { id: 'c6', cat: 'camps', name: 'Pronghorn Ranch', desc: 'Rancho no epílogo (Chapter 8).', coords: [76.0, 95.0] },
+  { id: 'c7', cat: 'camps', name: 'Lakay', desc: 'Acampamento temporário em Lakay (Chapter 5).', coords: [-101.0, 193.6] },
 
   // Gravuras Rupestres
   { id: 'rc1', cat: 'rock_carvings', name: 'Gravura 1 - Mount Hagen', desc: 'No topo de Mount Hagen, Grizzlies West.', coords: [-58.32, 115.15] },
