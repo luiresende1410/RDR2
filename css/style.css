@@ -1,32 +1,32 @@
 ﻿/* RDR2 interactive map — original western interface */
 :root {
-  --panel: #171512;
-  --panel-2: #211e19;
-  --line: #383126;
-  --text: #eee6d8;
-  --muted: #9d9383;
+  --panel: #2a2118;
+  --panel-2: #342a1f;
+  --line: #4a3d2e;
+  --text: #e8dcc8;
+  --muted: #a89478;
   --gold: #c6a15b;
-  --red: #a52a25;
+  --red: #8b3a2a;
   --sidebar-width: 326px;
   --sidebar-half-width: 163px;
 }
 * { box-sizing: border-box; }
 html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
-body { font-family: Georgia, 'Times New Roman', serif; background: #0e0d0b; color: var(--text); }
+body { font-family: Georgia, 'Times New Roman', serif; background: #1a1410; color: var(--text); }
 button, input { font: inherit; }
-#map { position: fixed; inset: 0 0 0 var(--sidebar-width); z-index: 1; background: #0e0d0b; transition: left .3s ease; }
+#map { position: fixed; inset: 0 0 0 var(--sidebar-width); z-index: 1; background: #1a1410; transition: left .3s ease; }
 body.sidebar-closed #map { left: 0; }
-.sidebar { position: fixed; inset: 0 auto 0 0; width: var(--sidebar-width); z-index: 1000; display: flex; flex-direction: column; background: linear-gradient(180deg, #1c1915, #12110f); border-right: 1px solid var(--line); box-shadow: 8px 0 30px #0008; transition: transform .3s ease; }
+.sidebar { position: fixed; inset: 0 auto 0 0; width: var(--sidebar-width); z-index: 1000; display: flex; flex-direction: column; background: linear-gradient(180deg, #2a2118, #1e1812); border-right: 1px solid var(--line); box-shadow: 8px 0 30px #0008; transition: transform .3s ease; }
 .sidebar.hidden { transform: translateX(-100%); }
-.sidebar-header { min-height: 78px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; background: #12110f; border-bottom: 1px solid var(--line); }
-.brand-mark { width: 44px; height: 50px; display: grid; place-items: center; flex: 0 0 auto; font: 800 31px/1 Georgia, serif; color: #f1e8d7; background: var(--red); clip-path: polygon(8% 0, 100% 5%, 93% 93%, 11% 100%, 0 51%); text-shadow: 2px 2px #0008; }
+.sidebar-header { min-height: 78px; padding: 14px 16px; display: flex; align-items: center; gap: 12px; background: #1e1812; border-bottom: 1px solid var(--line); }
+.brand-mark { width: 44px; height: 50px; display: grid; place-items: center; flex: 0 0 auto; font: 800 31px/1 Georgia, serif; color: #f1e8d7; background: #8b3a2a; clip-path: polygon(8% 0, 100% 5%, 93% 93%, 11% 100%, 0 51%); text-shadow: 2px 2px #0008; }
 .brand-copy { min-width: 0; flex: 1; }
 .eyebrow { display: block; margin-bottom: 3px; color: var(--gold); font: 600 9px/1.2 'Segoe UI', sans-serif; letter-spacing: 2px; text-transform: uppercase; }
 .brand-copy h1 { margin: 0; color: var(--text); font: 700 20px/1.1 Georgia, serif; letter-spacing: .4px; }
 .icon-button { border: 0; background: transparent; color: var(--muted); cursor: pointer; }
 .sidebar-close { width: 34px; height: 34px; font-size: 26px; border-radius: 50%; }
 .sidebar-close:hover { color: white; background: #ffffff0d; }
-.search-box { margin: 14px 14px 10px; height: 42px; display: flex; align-items: center; gap: 9px; padding: 0 12px; color: var(--gold); background: #0f0e0c; border: 1px solid var(--line); border-radius: 4px; }
+.search-box { margin: 14px 14px 10px; height: 42px; display: flex; align-items: center; gap: 9px; padding: 0 12px; color: var(--gold); background: #1a1410; border: 1px solid var(--line); border-radius: 4px; }
 .search-box input { width: 100%; border: 0; outline: 0; color: var(--text); background: transparent; font-family: 'Segoe UI', sans-serif; font-size: 13px; }
 .search-box input::placeholder { color: #766e62; }
 .progress-section { padding: 3px 14px 14px; border-bottom: 1px solid var(--line); }
@@ -60,7 +60,7 @@ body.sidebar-closed .sidebar-toggle { display: grid; }
 body.sidebar-closed .map-hint { left: 50%; }
 .map-hint.hidden { opacity: 0; pointer-events: none; }
 .map-hint .separator { margin: 0 7px; color: var(--gold); }
-.leaflet-container { background: #0d0c0a !important; font-family: 'Segoe UI', sans-serif; }
+.leaflet-container { background: #1a1410 !important; font-family: 'Segoe UI', sans-serif; }
 .leaflet-control-zoom { border: 1px solid var(--line) !important; box-shadow: 0 4px 15px #0007 !important; }
 .leaflet-control-zoom a { color: #dfd4c4 !important; background: #181612 !important; border-color: var(--line) !important; }
 .custom-marker { width: 30px; height: 30px; display: grid; place-items: center; border: 2px solid #eadfca; border-radius: 50% 50% 50% 10%; color: #fff; background: var(--marker-color); box-shadow: 0 3px 9px #000b; transform: rotate(-45deg); transition: transform .15s, opacity .15s; }
