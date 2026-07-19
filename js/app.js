@@ -41,7 +41,7 @@
       minZoom: 2,
       maxZoom: 7,
       noWrap: true,
-      tms: false
+      tms: true
     }).addTo(map);
 
     map.fitBounds(MAP_BOUNDARY);
