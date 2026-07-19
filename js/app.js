@@ -46,6 +46,16 @@
 
     map.fitBounds(MAP_BOUNDARY);
     map.setMaxBounds(MAP_BOUNDARY.pad(0.05));
+
+    // Show coordinates on mouse move
+    const coordsDisplay = document.createElement('div');
+    coordsDisplay.id = 'coordsDisplay';
+    coordsDisplay.style.cssText = 'position:fixed;bottom:8px;right:8px;z-index:1000;padding:5px 10px;background:#171512ee;color:#d4a953;border:1px solid #544735;border-radius:3px;font:12px monospace;pointer-events:none;';
+    document.body.appendChild(coordsDisplay);
+    map.on('mousemove', function(e) {
+      coordsDisplay.textContent = '[' + e.latlng.lat.toFixed(1) + ', ' + e.latlng.lng.toFixed(1) + ']';
+    });
+
     markersLayer = L.layerGroup().addTo(map);
     renderMarkers();
 
@@ -89,6 +99,7 @@
       <span class="popup-cat" style="--cat-color:${category.color}">${category.icon} ${escapeHtml(category.name)}</span>
       <h2>${escapeHtml(item.name)}</h2>
       <p>${escapeHtml(item.desc)}</p>
+      <p style="color:#9d9383;font-size:10px;margin:0 0 10px;">coords: [${item.coords[0]}, ${item.coords[1]}]</p>
       <button class="popup-btn${found ? ' found' : ''}" type="button" onclick="window.RDR2Map.toggleFound('${item.id}')">
         ${found ? '✓ Encontrado — desfazer' : '○ Marcar como encontrado'}
       </button>
