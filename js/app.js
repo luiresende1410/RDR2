@@ -217,8 +217,77 @@
       if (window.RDR2Spoiler) window.RDR2Spoiler.setChapter(parseInt(e.target.value));
       renderMarkers();
     });
+    // Sidebar tabs (Mapa / Guia)
+    document.getElementById('tabMap').addEventListener('click', () => switchTab('map'));
+    document.getElementById('tabGuide').addEventListener('click', () => switchTab('guide'));
+    // Guide sub-tabs
+    document.querySelectorAll('.guide-tab').forEach(btn => {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.guide-tab').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        renderGuide(this.dataset.section);
+      });
+    });
     window.addEventListener('resize', debounce(() => map.invalidateSize(), 150));
     MOBILE_VIEWPORT.addEventListener('change', syncSidebarForViewport);
+  }
+
+  function switchTab(tab) {
+    const categories = document.getElementById('categories');
+    const guidePanel = document.getElementById('guidePanel');
+    const tabMap = document.getElementById('tabMap');
+    const tabGuide = document.getElementById('tabGuide');
+    if (tab === 'guide') {
+      categories.style.display = 'none';
+      guidePanel.classList.add('visible');
+      tabMap.classList.remove('active');
+      tabGuide.classList.add('active');
+      renderGuide('horses');
+    } else {
+      categories.style.display = '';
+      guidePanel.classList.remove('visible');
+      tabMap.classList.add('active');
+      tabGuide.classList.remove('active');
+    }
+  }
+
+  function renderGuide(section) {
+    const container = document.getElementById('guideContent');
+    let html = '';
+    if (section === 'horses' && typeof HORSES_DATA !== 'undefined') {
+      HORSES_DATA.forEach(h => {
+        html += `<div class="guide-card">
+          <span class="card-category">${escapeHtml(h.category)}</span>
+          <h4>${escapeHtml(h.name)}</h4>
+          <p>${escapeHtml(h.highlights)}</p>
+          <div class="card-stats">
+            <span class="stat">Vel: <strong>${h.stats.speed}</strong></span>
+            <span class="stat">Acel: <strong>${h.stats.acceleration}</strong></span>
+            <span class="stat">Manejo: <strong>${h.stats.handling}</strong></span>
+          </div>
+          <p class="card-obtain">📍 ${escapeHtml(h.howToObtain)}</p>
+        </div>`;
+      });
+    } else if (section === 'weapons' && typeof WEAPONS_DATA !== 'undefined') {
+      WEAPONS_DATA.forEach(w => {
+        html += `<div class="guide-card">
+          <span class="card-category">${escapeHtml(w.type)}</span>
+          <h4>${escapeHtml(w.name)}</h4>
+          <p>${escapeHtml(w.description)}</p>
+          <p class="card-obtain">📍 ${escapeHtml(w.howToObtain)}</p>
+        </div>`;
+      });
+    } else if (section === 'items' && typeof ITEMS_DATA !== 'undefined') {
+      ITEMS_DATA.forEach(i => {
+        html += `<div class="guide-card">
+          <span class="card-category">${escapeHtml(i.category)}</span>
+          <h4>${escapeHtml(i.name)}</h4>
+          <p>✨ ${escapeHtml(i.effect)}</p>
+          <p class="card-obtain">📍 ${escapeHtml(i.howToObtain)}</p>
+        </div>`;
+      });
+    }
+    container.innerHTML = html || '<p style="color:var(--muted);padding:20px;">Nenhum dado disponível.</p>';
   }
 
   function init() {

@@ -55,6 +55,19 @@
 
     <nav class="categories" id="categories" aria-label="Categorias"></nav>
 
+    <div class="sidebar-tabs">
+      <button class="tab-btn active" id="tabMap" type="button">🗺️ Mapa</button>
+      <button class="tab-btn" id="tabGuide" type="button">📘 Guia</button>
+    </div>
+    <div class="guide-panel" id="guidePanel">
+      <div class="guide-nav">
+        <button class="guide-tab active" data-section="horses">🐴 Cavalos</button>
+        <button class="guide-tab" data-section="weapons">🔫 Armas</button>
+        <button class="guide-tab" data-section="items">💎 Itens</button>
+      </div>
+      <div class="guide-content" id="guideContent"></div>
+    </div>
+
     <footer class="sidebar-footer">
       <button class="btn-checklist" id="btnChecklist" type="button" onclick="window.RDR2Checklist.toggleChecklist()">🏆 Checklist 100%</button>
       <div class="backup-buttons">
@@ -79,10 +92,11 @@
   <noscript>Este mapa precisa de JavaScript habilitado.</noscript>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/markers-data.js?v=20260719-import"></script>
+  <script src="js/game-data.js"></script>
   <script src="js/backup.js"></script>
   <script src="js/spoiler.js"></script>
   <script src="js/checklist.js"></script>
-  <script src="js/app.js?v=20260719-v2"></script>
+  <script src="js/app.js?v=20260720-guide"></script>
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('./sw.js');
