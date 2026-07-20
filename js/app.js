@@ -95,13 +95,19 @@
   }
 
   function buildPopup(item, category, found) {
+    const tipHtml = item.tip ? `<div class="popup-tip">💡 <em>${escapeHtml(item.tip)}</em></div>` : '';
+    const imgHtml = item.image ? `<div class="popup-image"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" loading="lazy"></div>` : '';
+    const coordsHtml = `<p style="color:#9d9383;font-size:10px;margin:0 0 10px;">coords: [${item.coords[0]}, ${item.coords[1]}]</p>`;
+
     return `<article class="marker-popup">
       <span class="popup-cat" style="--cat-color:${category.color}">${category.icon} ${escapeHtml(category.name)}</span>
       <h2>${escapeHtml(item.name)}</h2>
+      ${imgHtml}
       <p>${escapeHtml(item.desc)}</p>
-      <p style="color:#9d9383;font-size:10px;margin:0 0 10px;">coords: [${item.coords[0]}, ${item.coords[1]}]</p>
+      ${tipHtml}
+      ${coordsHtml}
       <button class="popup-btn${found ? ' found' : ''}" type="button" onclick="window.RDR2Map.toggleFound('${item.id}')">
-        ${found ? '✓ Encontrado — desfazer' : '○ Marcar como encontrado'}
+        ${found ? '✓ Coletado — desfazer' : '○ Marcar como coletado'}
       </button>
     </article>`;
   }
@@ -201,6 +207,8 @@
     document.getElementById('sidebarToggle').addEventListener('click', () => toggleSidebar(true));
     document.getElementById('sidebarClose').addEventListener('click', () => toggleSidebar(false));
     document.getElementById('btnReset').addEventListener('click', resetProgress);
+    document.getElementById('btnExport').addEventListener('click', () => window.RDR2Backup.exportProgress());
+    document.getElementById('btnImport').addEventListener('click', () => window.RDR2Backup.importProgress());
     document.getElementById('selectAllCategories').addEventListener('change', event => setAllCategories(event.target.checked));
     document.getElementById('searchInput').addEventListener('input', debounce(renderMarkers, 180));
     window.addEventListener('resize', debounce(() => map.invalidateSize(), 150));
