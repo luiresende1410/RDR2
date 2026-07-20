@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#16130f">
+  <meta name="theme-color" content="#1a1410">
   <meta name="description" content="Mapa interativo não oficial de Red Dead Redemption 2.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
   <title>RDR2 — Mapa Interativo</title>
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -26,6 +28,18 @@
     </div>
 
     <section class="progress-section" aria-label="Progresso">
+      <div class="spoiler-filter">
+        <label for="chapterSelect">📖 Capítulo:</label>
+        <select id="chapterSelect">
+          <option value="1">Cap. 1 — Colter</option>
+          <option value="2">Cap. 2 — Horseshoe</option>
+          <option value="3">Cap. 3 — Clemens Point</option>
+          <option value="4">Cap. 4 — Shady Belle</option>
+          <option value="5">Cap. 5 — Guarma</option>
+          <option value="6">Cap. 6 — Beaver Hollow</option>
+          <option value="7" selected>Epílogo — Tudo</option>
+        </select>
+      </div>
       <div class="progress-heading">
         <span>Progresso</span>
         <strong id="progressText">0 / 0</strong>
@@ -42,6 +56,7 @@
     <nav class="categories" id="categories" aria-label="Categorias"></nav>
 
     <footer class="sidebar-footer">
+      <button class="btn-checklist" id="btnChecklist" type="button" onclick="window.RDR2Checklist.toggleChecklist()">🏆 Checklist 100%</button>
       <div class="backup-buttons">
         <button class="btn-backup" id="btnExport" type="button">⬇ Exportar</button>
         <button class="btn-backup" id="btnImport" type="button">⬆ Importar</button>
@@ -55,6 +70,8 @@
 
   <main id="map" aria-label="Mapa interativo de Red Dead Redemption 2"></main>
 
+  <div id="checklistPanel" class="checklist-panel"></div>
+
   <div class="map-hint" id="mapHint">
     <span>Arraste para explorar</span><span class="separator">•</span><span>Use a roda ou pinça para ampliar</span>
   </div>
@@ -63,7 +80,14 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/markers-data.js?v=20260719-import"></script>
   <script src="js/backup.js"></script>
-  <script src="js/app.js?v=20260719-coords"></script>
+  <script src="js/spoiler.js"></script>
+  <script src="js/checklist.js"></script>
+  <script src="js/app.js?v=20260719-v2"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
+    }
+  </script>
 </body>
 </html>
 

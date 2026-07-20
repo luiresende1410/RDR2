@@ -66,11 +66,13 @@
     markersLayer.clearLayers();
     markerObjects = {};
     const term = document.getElementById('searchInput').value.toLocaleLowerCase('pt-BR').trim();
+    const chapter = window.RDR2Spoiler ? window.RDR2Spoiler.getSelectedChapter() : 7;
     let visible = 0;
 
     MARKERS.forEach(item => {
       if (!activeFilters[item.cat]) return;
       if (term && !(`${item.name} ${item.desc}`).toLocaleLowerCase('pt-BR').includes(term)) return;
+      if (window.RDR2Spoiler && !window.RDR2Spoiler.isMarkerVisible(item.coords, chapter)) return;
 
       const category = CATEGORIES.find(cat => cat.id === item.cat);
       if (!category) return;
@@ -211,6 +213,10 @@
     document.getElementById('btnImport').addEventListener('click', () => window.RDR2Backup.importProgress());
     document.getElementById('selectAllCategories').addEventListener('change', event => setAllCategories(event.target.checked));
     document.getElementById('searchInput').addEventListener('input', debounce(renderMarkers, 180));
+    document.getElementById('chapterSelect').addEventListener('change', function (e) {
+      if (window.RDR2Spoiler) window.RDR2Spoiler.setChapter(parseInt(e.target.value));
+      renderMarkers();
+    });
     window.addEventListener('resize', debounce(() => map.invalidateSize(), 150));
     MOBILE_VIEWPORT.addEventListener('change', syncSidebarForViewport);
   }
@@ -220,6 +226,10 @@
     bindEvents();
     initMap();
     syncSidebarForViewport(MOBILE_VIEWPORT);
+    // Restore chapter selection
+    if (window.RDR2Spoiler) {
+      document.getElementById('chapterSelect').value = window.RDR2Spoiler.getSelectedChapter();
+    }
   }
 
   window.RDR2Map = { toggleFound, toggleCategory };
